@@ -8,6 +8,15 @@ use an `s3://...` uri, then the `remote_or_s3_file` will act like the
 
 ## Usage
 
+Include the default recipe to ensure the aws-sdk is installed in Chef. Only
+needed if you're using an `aws` cookbook version of less than 3.0.
+
+```ruby
+include_recipe 'remote_or_s3_file'
+```
+
+Then to download to a file from a non-S3 bucket
+
 ```ruby
 remote_or_s3_file 'example.zip' do
   source 'http://example.com/example.zip'
