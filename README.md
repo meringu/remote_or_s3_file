@@ -1,4 +1,6 @@
 # remote_or_s3_file
+[![Cookbook Version](https://img.shields.io/cookbook/v/remote_or_s3_file.svg?style=flat)](https://supermarket.chef.io/cookbooks/remote_or_s3_file)
+[![Build Status](https://travis-ci.org/meringu/remote_or_s3_file.svg?branch=master)](https://travis-ci.org/meringu/remote_or_s3_file)
 
 This cookbook provides the resource `remote_or_s3_file`.
 
