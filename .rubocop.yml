@@ -1,0 +1,5 @@
+AlignParameters:
+  Enabled: false
+
+LineLength:
+  Max: 200
