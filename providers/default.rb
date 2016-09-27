@@ -20,34 +20,73 @@ action :touch do
   do_remote_or_s3_file(:touch)
 end
 
+def s3_url?
+  new_resource.source.start_with? 's3://'
+end
+
+def s3_components
+  comps = new_resource.source.scan(%r{^s3://([^/]+)/(.*)$})
+  Chef::Application.fatal!("Could not extract components from URI #{uri}") if comps.empty?
+  comps.first
+end
+
+def s3_bucket
+  s3_components[0]
+end
+
+def s3_prefix
+  s3_components[1]
+end
+
+def common_attributes
+  %i(
+    owner
+    group
+    mode
+    checksum
+    backup
+  )
+end
+
+def aws_s3_file_attributes
+  %i(
+    aws_access_key_id
+    aws_secret_access_key
+    aws_session_token
+    region
+  ).concat(common_attributes)
+end
+
+def remote_file_attributes
+  %i(
+    source
+  ).concat(common_attributes)
+end
+
+def do_aws_s3_file(resource_action)
+  aws_s3_file new_resource.path do
+    bucket s3_bucket
+    remote_path s3_prefix
+    aws_s3_file_attributes.each do |attr|
+      send(attr, new_resource.send(attr)) unless new_resource.send(attr).nil?
+    end
+    action resource_action
+  end
+end
+
+def do_remote_file(resource_action)
+  remote_file new_resource.path do
+    remote_file_attributes.each do |attr|
+      send(attr, new_resource.send(attr))
+    end
+    action resource_action
+  end
+end
+
 def do_remote_or_s3_file(resource_action)
-  if new_resource.source.start_with? 's3://'
-    comps = new_resource.source.scan(%r{^s3://([^/]+)/(.*)$})
-    Chef::Application.fatal!("Could not extract components from URI #{uri}") if comps.empty?
-    bucket, path = comps.first
-    aws_s3_file new_resource.path do
-      bucket bucket
-      remote_path path
-      owner new_resource.owner unless new_resource.owner.nil?
-      group new_resource.group unless new_resource.group.nil?
-      mode new_resource.mode unless new_resource.mode.nil?
-      checksum new_resource.checksum unless new_resource.backup.nil?
-      backup new_resource.backup unless new_resource.backup.nil?
-      aws_access_key_id new_resource.aws_access_key_id unless new_resource.aws_access_key_id.nil?
-      aws_secret_access_key new_resource.aws_secret_access_key unless new_resource.aws_secret_access_key.nil?
-      aws_session_token new_resource.aws_session_token unless new_resource.aws_session_token.nil?
-      region new_resource.region unless new_resource.region.nil?
-      action resource_action
-    end
+  if s3_url?
+    do_aws_s3_file(resource_action)
   else
-    remote_file new_resource.path do
-      source new_resource.source
-      owner new_resource.owner
-      group new_resource.group
-      mode new_resource.mode
-      checksum new_resource.checksum
-      backup new_resource.backup
-      action resource_action
-    end
+    do_remote_file(resource_action)
   end
 end

@@ -80,9 +80,7 @@ Vagrant.configure(2) do |config|
     }
 
     chef.run_list = [
-
       'recipe[remote_or_s3_file::default]'
     ]
   end
-
 end
