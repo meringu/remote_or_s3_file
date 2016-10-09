@@ -4,6 +4,7 @@ gem 'chef'
 gem 'chefspec'
 gem 'test-kitchen'
 gem 'kitchen-vagrant'
+gem 'kitchen-docker'
 
 group :lint do
   gem 'foodcritic'
@@ -15,6 +16,3 @@ group :unit do
   gem 'berkshelf'
   gem 'fauxhai'
 end
-
-# https://github.com/chef/ffi-yajl/issues/81
-gem 'ffi-yajl', '~> 2.2.3'
