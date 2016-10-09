@@ -63,6 +63,7 @@ def remote_file_attributes
   ).concat(common_attributes)
 end
 
+# rubocop:disable Metrics/AbcSize
 def do_aws_s3_file(resource_action)
   aws_s3_file new_resource.path do
     bucket s3_bucket
@@ -73,6 +74,7 @@ def do_aws_s3_file(resource_action)
     action resource_action
   end
 end
+# rubocop:enable Metrics/AbcSize
 
 def do_remote_file(resource_action)
   remote_file new_resource.path do
