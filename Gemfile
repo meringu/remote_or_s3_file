@@ -2,14 +2,14 @@ source 'https://rubygems.org'
 
 gem 'chef'
 gem 'chefspec'
-gem 'test-kitchen'
-gem 'kitchen-vagrant'
 gem 'kitchen-docker'
+gem 'kitchen-vagrant'
+gem 'test-kitchen'
 
 group :lint do
   gem 'foodcritic'
-  gem 'rubocop'
   gem 'rainbow'
+  gem 'rubocop'
 end
 
 group :unit do
